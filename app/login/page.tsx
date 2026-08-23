@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { motion } from "framer-motion"
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -16,7 +16,7 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { AnimatedLogo } from "@/components/animated-logo"
 
-export default function CustomerLoginPage() {
+function LoginForm() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -219,5 +219,17 @@ export default function CustomerLoginPage() {
         </Card>
       </motion.div>
     </div>
+  )
+}
+
+export default function CustomerLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 }
