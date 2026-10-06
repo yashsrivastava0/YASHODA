@@ -1,9 +1,11 @@
 import { MongoClient } from "mongodb"
 
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://haha:PqPmBm6G179V1HJT@cluster0.6caidgm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-const MONGODB_DB = process.env.MONGODB_DB || "yashoda"
+const MONGODB_URI = process.env.MONGODB_URI
+const MONGODB_DB = process.env.MONGODB_DB
+
+if (!MONGODB_URI || !MONGODB_DB) {
+  throw new Error("MONGODB_URI and MONGODB_DB must be configured")
+}
 
 // Connection cache
 let cachedClient: MongoClient | null = null

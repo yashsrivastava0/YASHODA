@@ -41,17 +41,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
 
-    // Generate JWT token
+    const jwtSecret = process.env.JWT_SECRET
+    if (!jwtSecret) {
+      console.error("JWT_SECRET is not configured")
+      return NextResponse.json({ error: "Authentication is temporarily unavailable" }, { status: 503 })
+    }
+
     const token = jwt.sign(
       {
         userId: user._id.toString(),
         email: user.email,
         role: user.role,
       },
-      process.env.JWT_SECRET ||
-        "c5e42c5a8430be9345f7ea089ff603334342aa1c916b80236524cc949b77b119d547e1e7ebe03acd47b1b1f7ae6cb3a1613917f211309ef3cbe75bacf969018a232d869b0309585357b60bfe9eec071b0a1451009a33e0953675680b06ac4cb837587781dff906a05f465fae7b62b05d96c24cd07dddd0f6c7868153be6ed4d522b81b116b18d456d8fcda67139af8c500ae54c131647fedc7737707d8ba36848bff0c864a5a77faf588e6372c6adae02c59c18c559bc9820dc8ad6aa8f34e79",
+      jwtSecret,
       { expiresIn: "7d" },
     )
+
 
     console.log("Customer login successful:", email)
 
