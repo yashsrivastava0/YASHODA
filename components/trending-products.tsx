@@ -9,42 +9,40 @@ export function TrendingProducts() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    const controller = new AbortController()
+
     const fetchProducts = async () => {
       try {
-        // Try MongoDB first, fallback to demo data
-        let response = await fetch("/api/products?limit=4")
+        const response = await fetch("/api/products?limit=4", {
+          signal: controller.signal,
+          headers: { Accept: "application/json" },
+        })
 
-        if (!response.ok) {
-          // Fallback to demo data
-          response = await fetch("/api/products/demo?limit=4")
-        }
-
-        if (response.ok) {
-          const data = await response.json()
-          setProducts(data)
-        } else {
-          console.error("Failed to fetch trending products")
-          setProducts([])
-        }
+        if (!response.ok) throw new Error("Product API unavailable")
+        const data = await response.json()
+        setProducts(Array.isArray(data) ? data : [])
       } catch (error) {
-        console.error("Error fetching trending products:", error)
-        // Try demo data as final fallback
+        if (error instanceof DOMException && error.name === "AbortError") return
+
         try {
-          const response = await fetch("/api/products/demo?limit=4")
-          if (response.ok) {
-            const data = await response.json()
-            setProducts(data)
+          const response = await fetch("/api/products/demo?limit=4", {
+            signal: controller.signal,
+            headers: { Accept: "application/json" },
+          })
+          const data = await response.json()
+          setProducts(Array.isArray(data) ? data : [])
+        } catch (fallbackError) {
+          if (!(fallbackError instanceof DOMException && fallbackError.name === "AbortError")) {
+            setProducts([])
           }
-        } catch (demoError) {
-          console.error("Demo data also failed:", demoError)
-          setProducts([])
         }
       } finally {
-        setIsLoading(false)
+        if (!controller.signal.aborted) setIsLoading(false)
       }
     }
 
     fetchProducts()
+    return () => controller.abort()
   }, [])
 
   const container = {

@@ -1,114 +1,101 @@
-# YASHODA - E-commerce Platform
+# YASHODA
 
-## Project Description for Resume
+YASHODA is a modern, full-stack marketplace for fashion, electronics, home decor, and skincare. The current experience uses Next.js App Router, a responsive Tailwind UI, Framer Motion for purposeful interaction, MongoDB for product data, and JWT-based authentication.
 
-**YASHODA (Your All-Season Hyper Online Digital Apparel)** is a full-stack e-commerce web application built with modern technologies, featuring a futuristic design and comprehensive admin dashboard.
+## Production readiness
 
-### Key Features:
-- **Frontend**: Next.js 14 with TypeScript, Tailwind CSS, Framer Motion animations
-- **Backend**: Node.js API routes with MongoDB Atlas integration
-- **Authentication**: JWT-based auth system with role-based access (Admin/Customer)
-- **Database**: MongoDB Atlas with collections for users, products, orders
-- **UI/UX**: Responsive design with animated components, dark theme, gradient effects
-- **Admin Panel**: Complete CRUD operations for products, orders, users management
-- **Shopping Cart**: Persistent cart with localStorage, checkout process
-- **Product Management**: Categories (Fashion, Electronics, Home Decor, Skincare)
-- **Payment Ready**: Structured for payment gateway integration
+- Next.js image optimization is enabled for the Unsplash assets used by the storefront.
+- Product API responses validate limits and return predictable JSON errors.
+- MongoDB connections are cached for serverless reuse.
+- Login and demo-login routes use the project environment variables rather than hardcoded deployment values.
+- The app includes baseline security response headers in `next.config.mjs`.
+- The storefront uses responsive layouts, lazy-loaded below-the-fold media, and an abortable product request so navigation does not leave stale requests behind.
 
-### Technical Implementation:
-- **State Management**: React Context API for cart and authentication
-- **API Design**: RESTful endpoints for all CRUD operations
-- **Security**: Password hashing with bcrypt, JWT tokens, protected routes
-- **Performance**: Image optimization, lazy loading, responsive design
-- **Deployment Ready**: Configured for Vercel deployment with environment variables
+## Stack
 
-### Business Logic:
-- Multi-category product catalog with 24+ sample products
-- Indian Rupee pricing with tax calculations
-- Inventory management with stock tracking
-- Order processing workflow
-- User role management (Admin/Customer)
-- Real-time cart updates and checkout process
+- Next.js 15 App Router + React 19 + TypeScript
+- Tailwind CSS + shadcn/ui + Lucide icons
+- Framer Motion for lightweight entrance and hover transitions
+- MongoDB Atlas via the official MongoDB driver
+- JWT authentication with bcrypt password hashing
+- Vercel-compatible standalone output
 
-## Local Setup Instructions
+## Setup
 
-### Prerequisites
-- Node.js (version 16 or higher)
-- npm or yarn package manager
-- MongoDB Atlas account (free tier works)
+### Requirements
 
-### Step-by-Step Setup
+- Node.js 18.18 or newer
+- A MongoDB database (MongoDB Atlas works well)
 
-1. **Clone/Download the Project**
-   \`\`\`bash
-   # If using git
-   git clone <your-repo-url>
-   cd yashoda-ecommerce
-   
-   # Or extract the downloaded ZIP file
-   \`\`\`
+### Install and run
 
-2. **Install Dependencies**
-   \`\`\`bash
-   npm install
-   \`\`\`
+```bash
+npm install
+npm run dev
+```
 
-3. **Environment Setup**
-   - Copy the `.env.local` file (already configured)
-   - The MongoDB connection is already set up
-   - No additional configuration needed
+Open [http://localhost:3000](http://localhost:3000).
 
-4. **Initialize Database (Optional)**
-   \`\`\`bash
-   # Run this to populate sample data
-   node scripts/setup-yashoda-database.js
-   \`\`\`
+### Environment variables
 
-5. **Start Development Server**
-   \`\`\`bash
-   npm run dev
-   \`\`\`
+Create `.env.local` with the following values. Never commit this file or real credentials.
 
-6. **Access the Application**
-   - Frontend: http://localhost:3000
-   - Admin Panel: http://localhost:3000/admin/login
+```env
+MONGODB_URI=mongodb+srv://...
+MONGODB_DB=yashoda
+JWT_SECRET=replace-with-a-long-random-secret
+API_URL=http://localhost:3000
+```
 
-### Default Login Credentials
+The deployment environment must define the same variables in Vercel project settings. The app can render its demo catalog when the database-backed product request is unavailable, but authentication and live catalog management require a working MongoDB connection.
 
-**Admin Login:**
-- Email: admin@yashoda.com
-- Password: admin123
+## Available scripts
 
-**Customer Login:**
-- Email: customer@yashoda.com  
-- Password: customer123
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server on port 3000 |
+| `npm run build` | Create a production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | Run the configured lint command |
 
-### Project Structure
-\`\`\`
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   ├── admin/             # Admin dashboard
-│   ├── categories/        # Product categories
-│   └── components/        # Reusable components
-├── components/            # UI components
-├── hooks/                 # Custom React hooks
-├── lib/                   # Utility functions
-└── scripts/              # Database setup scripts
-\`\`\`
+## Application areas
 
-### Available Scripts
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
+- `/` — storefront landing page and featured products
+- `/categories` — category discovery
+- `/categories/[category]` — filtered catalog pages
+- `/login` — customer authentication
+- `/admin/login` — admin authentication
+- `/admin` — protected administration tools
+- `/api/products` — MongoDB-backed product listing and creation endpoint
+- `/api/auth/login` — password login endpoint
 
-### Features Implemented
-✅ User Authentication (Login/Register)
-✅ Product Catalog with Categories
-✅ Shopping Cart Functionality
-✅ Admin Dashboard
-✅ Order Management
-✅ Responsive Design
-✅ MongoDB Integration
-✅ JWT Authentication
-✅ Role-based Access Control
+## Deployment checklist
+
+1. Connect the repository to Vercel.
+2. Add `MONGODB_URI`, `MONGODB_DB`, and a strong `JWT_SECRET` to Development, Preview, and Production environments.
+3. Set `API_URL` to the deployed origin for production if server-side consumers need it.
+4. Deploy with the standard Next.js preset; `output: "standalone"` is already configured.
+5. Verify the homepage, product listing, login flow, and admin route on the preview deployment.
+6. Check Vercel runtime logs if a database request fails; the storefront fallback should keep the public homepage usable while the database is repaired.
+
+## Repository layout
+
+```text
+app/          App Router pages and API routes
+components/   Storefront and reusable UI components
+hooks/        Cart and authentication providers
+lib/          MongoDB and authentication utilities
+public/       Static assets
+scripts/      Optional data maintenance scripts
+```
+
+## Security notes
+
+Use unique production secrets, keep MongoDB network access restricted where possible, validate all admin mutations server-side, and do not use the demo credentials from development in production.
+
+## License
+
+Private project. All rights reserved.
+
+<sub>Built for a faster, calmer way to discover everyday essentials.</sub>
+

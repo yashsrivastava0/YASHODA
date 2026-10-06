@@ -1,300 +1,63 @@
-"use client"
+'use client'
 
-import { useRef } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, ShoppingBag, Star, Users, Package, Shield, Truck, HeadphonesIcon } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import { CategoryPreview } from "@/components/category-preview"
-import { TrendingProducts } from "@/components/trending-products"
-import { HeroParallax } from "@/components/hero-parallax"
-import { AnimatedLogo } from "@/components/animated-logo"
-import { CountdownTimer } from "@/components/countdown-timer"
+import Link from 'next/link'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { ArrowUpRight, Check, ChevronRight, Headphones, PackageCheck, ShieldCheck, Sparkles, Truck } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { CategoryPreview } from '@/components/category-preview'
+import { TrendingProducts } from '@/components/trending-products'
+import { HeroParallax } from '@/components/hero-parallax'
+import { CountdownTimer } from '@/components/countdown-timer'
+
+const stats = [
+  ['50K+', 'members styling their everyday'],
+  ['4.9/5', 'average customer rating'],
+  ['24h', 'dispatch on in-stock orders'],
+  ['30 day', 'easy returns, no questions'],
+]
+
+const benefits = [
+  { icon: ShieldCheck, title: 'Verified quality', text: 'Every item is reviewed by our team before it reaches the studio.' },
+  { icon: Truck, title: 'Fast, thoughtful delivery', text: 'Live order updates and protective packaging from checkout to door.' },
+  { icon: Headphones, title: 'Human support', text: 'Talk to a real stylist whenever you need a second opinion.' },
+]
 
 export default function Home() {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  })
-
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
+  const ref = useScroll()
+  const heroY = useTransform(ref.scrollY, [0, 600], [0, 120])
 
   return (
-    <main className="flex min-h-screen flex-col">
-      {/* Hero Section with Parallax */}
-      <div ref={ref} className="relative h-screen overflow-hidden">
-        <HeroParallax />
-        <motion.div
-          className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10"
-          style={{ opacity, scale }}
-        >
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-6"
-          >
-            <AnimatedLogo size="xl" showTagline />
-          </motion.div>
-
-          <motion.p
-            className="text-xl md:text-2xl mb-8 max-w-2xl text-gray-200"
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            Experience tomorrow's style today with our cutting-edge collection
-          </motion.p>
-
-          {/* Countdown Timer */}
-          <motion.div
-            className="mb-8"
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-          >
-            <CountdownTimer />
-          </motion.div>
-
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-          >
-            <Button
-              asChild
-              size="lg"
-              className="rounded-full px-8 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-            >
-              <Link href="/categories">
-                SHOP NOW <ShoppingBag className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Stats Section */}
-      <section className="py-16 px-4 md:px-8 bg-gradient-to-b from-black to-gray-900">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { icon: Users, number: "50K+", label: "Happy Customers" },
-              { icon: Package, number: "1000+", label: "Products" },
-              { icon: Star, number: "4.9", label: "Rating" },
-              { icon: Truck, number: "24/7", label: "Fast Delivery" },
-            ].map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                className="text-center"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-purple-600/20 rounded-full">
-                    <stat.icon className="h-8 w-8 text-purple-400" />
-                  </div>
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold mb-2">{stat.number}</h3>
-                <p className="text-gray-400">{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="py-20 px-4 md:px-8 bg-black">
-        <div className="container mx-auto">
-          <motion.h2
-            className="text-3xl md:text-4xl font-bold mb-12 text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            EXPLORE CATEGORIES
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <CategoryPreview title="FASHION" imageUrl="" href="/categories/fashion" />
-            <CategoryPreview title="ELECTRONICS" imageUrl="" href="/categories/electronics" />
-            <CategoryPreview title="HOME DECOR" imageUrl="" href="/categories/home-decor" />
-            <CategoryPreview title="SKINCARE" imageUrl="" href="/categories/skincare" />
-          </div>
-        </div>
-      </section>
-
-      {/* Trending Products */}
-      <section className="py-20 px-4 md:px-8 bg-gradient-to-b from-black to-gray-900">
-        <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-12">
-            <motion.h2
-              className="text-3xl md:text-4xl font-bold"
-              initial={{ x: -50, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              viewport={{ once: true }}
-            >
-              TRENDING NOW
-            </motion.h2>
-            <motion.div initial={{ x: 50, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Button variant="ghost" asChild>
-                <Link href="/categories" className="flex items-center">
-                  View All <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </motion.div>
-          </div>
-          <TrendingProducts />
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 px-4 md:px-8 bg-black">
-        <div className="container mx-auto">
-          <motion.h2
-            className="text-3xl md:text-4xl font-bold mb-12 text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            WHY CHOOSE YASHODA
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Shield,
-                title: "Secure Shopping",
-                description: "Your data is protected with enterprise-grade security",
-              },
-              {
-                icon: Truck,
-                title: "Fast Delivery",
-                description: "Free shipping on orders over ₹5,000 with express delivery",
-              },
-              {
-                icon: HeadphonesIcon,
-                title: "24/7 Support",
-                description: "Round-the-clock customer support for all your needs",
-              },
-            ].map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                className="text-center p-6 bg-gray-900/50 rounded-lg"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-purple-600/20 rounded-full">
-                    <feature.icon className="h-8 w-8 text-purple-400" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-gray-400">{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Limited Time Offer */}
-      <section className="py-20 px-4 md:px-8 bg-gradient-to-r from-indigo-900 to-purple-900">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="md:w-1/2 mb-8 md:mb-0">
-              <motion.h2
-                className="text-3xl md:text-5xl font-bold mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-              >
-                LIMITED TIME OFFER
-              </motion.h2>
-              <motion.p
-                className="text-xl mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                Get 30% off on our new collection. Use code YASHODA30 at checkout.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                viewport={{ once: true }}
-              >
-                <Button asChild size="lg" className="rounded-full px-8">
-                  <Link href="/categories">SHOP THE COLLECTION</Link>
-                </Button>
-              </motion.div>
+    <main className="overflow-hidden">
+      <section className="relative isolate min-h-[min(780px,calc(100vh-4rem))] overflow-hidden border-b border-border bg-background">
+        <motion.div style={{ y: heroY }} className="absolute inset-0 -z-10 opacity-70"><HeroParallax /></motion.div>
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_72%_30%,hsl(var(--primary)/.18),transparent_34%),linear-gradient(110deg,hsl(var(--background))_10%,transparent_70%)]" />
+        <div className="container relative flex min-h-[min(780px,calc(100vh-4rem))] items-center px-6 py-20 lg:px-10">
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7 }} className="max-w-3xl">
+            <Badge variant="outline" className="mb-7 gap-2 rounded-full border-primary/30 bg-primary/10 px-4 py-2 text-primary"><Sparkles className="size-3" /> The new Yashoda edit / 2025</Badge>
+            <h1 className="max-w-3xl text-5xl font-semibold tracking-[-.06em] text-foreground sm:text-7xl lg:text-8xl">Wear the future. <span className="text-primary">Keep it personal.</span></h1>
+            <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground">A considered marketplace for bold wardrobe pieces, useful objects, and the details that make your space feel like yours.</p>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Button asChild size="lg" className="rounded-full px-7"><Link href="/categories">Explore the edit <ArrowUpRight data-icon="inline-end" /></Link></Button>
+              <Button asChild variant="outline" size="lg" className="rounded-full px-7"><Link href="/categories/fashion">Shop fashion <ChevronRight data-icon="inline-end" /></Link></Button>
             </div>
-            <motion.div
-              className="md:w-1/2"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <div className="relative h-[400px] w-full">
-                <Image
-                  src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&h=600&fit=crop&crop=center&q=80"
-                  alt="Limited time fashion collection"
-                  fill
-                  className="object-cover rounded-lg"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="py-20 px-4 md:px-8 bg-black">
-        <div className="container mx-auto text-center">
-          <motion.h2
-            className="text-3xl md:text-4xl font-bold mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            STAY IN THE LOOP
-          </motion.h2>
-          <motion.p
-            className="text-xl text-gray-400 mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            Subscribe to get special offers, free giveaways, and exclusive deals.
-          </motion.p>
-          <motion.div
-            className="max-w-md mx-auto flex gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            viewport={{ once: true }}
-          >
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500"
-            />
-            <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
-              Subscribe
-            </Button>
+            <div className="mt-10 flex items-center gap-3 text-sm text-muted-foreground"><PackageCheck className="size-4 text-primary" /> Free delivery over ₹5,000 <span className="text-border">/</span> Secure checkout</div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, scale: .9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .25, duration: .8 }} className="absolute bottom-8 right-8 hidden w-64 rounded-2xl border border-border/70 bg-card/75 p-5 shadow-2xl backdrop-blur-xl lg:block">
+            <p className="text-xs font-medium uppercase tracking-[.2em] text-muted-foreground">Next drop</p><p className="mt-2 text-2xl font-semibold">Studio / 04</p><p className="mt-1 text-sm text-muted-foreground">Limited pieces, made to move.</p><div className="mt-4"><CountdownTimer /></div>
           </motion.div>
         </div>
       </section>
+
+      <section className="border-b border-border bg-card/40"><div className="container grid grid-cols-2 divide-x divide-border px-6 py-8 lg:grid-cols-4 lg:px-10">{stats.map(([value, label]) => <div key={value} className="px-4 first:pl-0 last:pr-0 lg:px-7"><p className="text-2xl font-semibold tracking-tight">{value}</p><p className="mt-1 text-sm text-muted-foreground">{label}</p></div>)}</div></section>
+
+      <section className="container px-6 py-24 lg:px-10"><div className="mb-10 flex items-end justify-between gap-4"><div><p className="text-sm font-medium uppercase tracking-[.2em] text-primary">Start here</p><h2 className="mt-3 text-4xl font-semibold tracking-tight">Find your next favorite.</h2></div><Button asChild variant="ghost" className="hidden rounded-full sm:flex"><Link href="/categories">View all categories <ArrowUpRight data-icon="inline-end" /></Link></Button></div><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"><CategoryPreview title="FASHION" imageUrl="" href="/categories/fashion" /><CategoryPreview title="ELECTRONICS" imageUrl="" href="/categories/electronics" /><CategoryPreview title="HOME DECOR" imageUrl="" href="/categories/home-decor" /><CategoryPreview title="SKINCARE" imageUrl="" href="/categories/skincare" /></div></section>
+
+      <section className="border-y border-border bg-card/30"><div className="container px-6 py-24 lg:px-10"><div className="mb-10 flex items-end justify-between"><div><p className="text-sm font-medium uppercase tracking-[.2em] text-primary">Curated weekly</p><h2 className="mt-3 text-4xl font-semibold tracking-tight">Trending now</h2></div><Button asChild variant="outline" className="rounded-full"><Link href="/categories">See the full edit <ArrowUpRight data-icon="inline-end" /></Link></Button></div><TrendingProducts /></div></section>
+
+      <section className="container grid gap-12 px-6 py-24 lg:grid-cols-[.8fr_1.2fr] lg:px-10"><div><p className="text-sm font-medium uppercase tracking-[.2em] text-primary">The Yashoda standard</p><h2 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">More intention. Less noise.</h2><p className="mt-5 max-w-md leading-7 text-muted-foreground">We make discovering great things feel calm, useful, and a little bit exciting.</p></div><div className="grid gap-4 sm:grid-cols-3">{benefits.map(({ icon: Icon, title, text }) => <motion.article whileHover={{ y: -5 }} key={title} className="rounded-2xl border border-border bg-card p-6"><Icon className="size-6 text-primary" /><h3 className="mt-6 font-semibold">{title}</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">{text}</p></motion.article>)}</div></section>
+
+      <section className="container px-6 pb-24 lg:px-10"><div className="relative overflow-hidden rounded-3xl bg-primary px-7 py-12 text-primary-foreground sm:px-12"><div className="relative z-10 max-w-xl"><p className="text-sm font-medium uppercase tracking-[.2em] opacity-75">Member offer</p><h2 className="mt-4 text-4xl font-semibold tracking-tight">A little something for your first order.</h2><p className="mt-4 leading-7 opacity-80">Take 15% off your first Yashoda order with code <strong>FIRSTLOOK</strong>.</p><Button asChild size="lg" variant="secondary" className="mt-8 rounded-full"><Link href="/categories">Shop the collection <Check data-icon="inline-end" /></Link></Button></div><div className="absolute -right-24 -top-24 size-80 rounded-full border-[40px] border-primary-foreground/10" /></div></section>
     </main>
   )
 }
