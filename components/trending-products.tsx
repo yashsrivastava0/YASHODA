@@ -3,45 +3,68 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ProductCard } from "./product-card"
+type Product = Record<string, unknown> & {
+  _id?: string
+  id?: string
+  name: string
+  price: number
+  image: string
+  category: string
+}
+
+let productCache: Product[] | null = null
+let productRequest: Promise<Product[]> | null = null
+
+async function loadProducts(signal: AbortSignal) {
+  if (productCache) return productCache
+  if (!productRequest) {
+    productRequest = fetch("/api/products?limit=4", {
+      signal,
+      headers: { Accept: "application/json" },
+      cache: "force-cache",
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Product API unavailable")
+        const data = await response.json()
+        return Array.isArray(data) ? data : []
+      })
+      .catch(async (error) => {
+        if (error instanceof DOMException && error.name === "AbortError") throw error
+        const response = await fetch("/api/products/demo?limit=4", {
+          signal,
+          headers: { Accept: "application/json" },
+          cache: "force-cache",
+        })
+        const data = await response.json()
+        return Array.isArray(data) ? data : []
+      })
+  }
+
+  const products = await productRequest
+  productCache = products
+  return products
+}
 
 export function TrendingProducts() {
-  const [products, setProducts] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [products, setProducts] = useState<Product[]>(productCache ?? [])
+  const [isLoading, setIsLoading] = useState(!productCache)
 
   useEffect(() => {
     const controller = new AbortController()
 
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("/api/products?limit=4", {
-          signal: controller.signal,
-          headers: { Accept: "application/json" },
-        })
-
-        if (!response.ok) throw new Error("Product API unavailable")
-        const data = await response.json()
-        setProducts(Array.isArray(data) ? data : [])
-      } catch (error) {
-        if (error instanceof DOMException && error.name === "AbortError") return
-
-        try {
-          const response = await fetch("/api/products/demo?limit=4", {
-            signal: controller.signal,
-            headers: { Accept: "application/json" },
-          })
-          const data = await response.json()
-          setProducts(Array.isArray(data) ? data : [])
-        } catch (fallbackError) {
-          if (!(fallbackError instanceof DOMException && fallbackError.name === "AbortError")) {
-            setProducts([])
-          }
+    loadProducts(controller.signal)
+      .then((nextProducts) => {
+        if (!controller.signal.aborted) setProducts(nextProducts)
+      })
+      .catch((error) => {
+        if (!(error instanceof DOMException && error.name === "AbortError") && !controller.signal.aborted) {
+          setProducts([])
         }
-      } finally {
+      })
+      .finally(() => {
         if (!controller.signal.aborted) setIsLoading(false)
-      }
-    }
+      })
 
-    fetchProducts()
     return () => controller.abort()
   }, [])
 
@@ -73,9 +96,10 @@ export function TrendingProducts() {
       whileInView="show"
       viewport={{ once: true }}
     >
-      {products.map((product) => (
-        <ProductCard key={product._id} product={{ ...product, id: product._id }} />
-      ))}
+      {products.map((product) => {
+        const id = String(product._id ?? product.id ?? "")
+        return <ProductCard key={id} product={{ ...product, id }} />
+      })}
     </motion.div>
   )
 }

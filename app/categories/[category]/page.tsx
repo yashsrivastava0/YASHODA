@@ -3,14 +3,14 @@ import { notFound } from "next/navigation"
 import { ProductGrid } from "@/components/product-grid"
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     category: string
-  }
+  }>
 }
 
 // Validate category and get metadata
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const category = params.category
+  const { category } = await params
 
   // Validate category
   const validCategories = ["fashion", "electronics", "home-decor", "skincare"]
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const { category } = params
+  const { category } = await params
 
   // Validate category
   const validCategories = ["fashion", "electronics", "home-decor", "skincare"]

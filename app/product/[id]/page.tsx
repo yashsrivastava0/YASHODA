@@ -2,9 +2,9 @@ import type { Metadata } from "next"
 import { ProductDetail } from "@/components/product-detail"
 
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 // Get product from our auto-initialized data
@@ -15,12 +15,14 @@ async function getProduct(id: string) {
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { id } = await params
   return {
-    title: `Product | Sayonara`,
+    title: `Product ${id} | YASHODA`,
     description: "Futuristic fashion product details",
   }
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  return <ProductDetail productId={params.id} />
+  const { id } = await params
+  return <ProductDetail productId={id} />
 }
