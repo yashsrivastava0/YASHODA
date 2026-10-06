@@ -8,7 +8,7 @@ const protectedPaths = ["/account", "/checkout", "/admin"]
 // Paths that require admin role
 const adminPaths = ["/admin"]
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
 
   // Check if path is protected
