@@ -4,11 +4,12 @@ import { NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
 import { connectToDatabase } from "@/lib/mongodb"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { db } = await connectToDatabase()
+    const { id } = await params
 
-    const product = await db.collection("products").findOne({ _id: new ObjectId(params.id) })
+    const product = await db.collection("products").findOne({ _id: new ObjectId(id) })
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
@@ -21,12 +22,13 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { db } = await connectToDatabase()
+    const { id } = await params
     const updateData = await request.json()
 
-    const result = await db.collection("products").updateOne({ _id: new ObjectId(params.id) }, { $set: updateData })
+    const result = await db.collection("products").updateOne({ _id: new ObjectId(id) }, { $set: updateData })
 
     if (result.matchedCount === 0) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
@@ -39,11 +41,12 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { db } = await connectToDatabase()
+    const { id } = await params
 
-    const result = await db.collection("products").deleteOne({ _id: new ObjectId(params.id) })
+    const result = await db.collection("products").deleteOne({ _id: new ObjectId(id) })
 
     if (result.deletedCount === 0) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
