@@ -1,17 +1,17 @@
 import { MongoClient } from "mongodb"
 
-const MONGODB_URI = process.env.MONGODB_URI
-const MONGODB_DB = process.env.MONGODB_DB
-
-if (!MONGODB_URI || !MONGODB_DB) {
-  throw new Error("MONGODB_URI and MONGODB_DB must be configured")
-}
-
 // Connection cache
 let cachedClient: MongoClient | null = null
 let cachedDb: any = null
 
 export async function connectToDatabase() {
+  const mongodbUri = process.env.MONGODB_URI
+  const mongodbDb = process.env.MONGODB_DB
+
+  if (!mongodbUri || !mongodbDb) {
+    throw new Error("MONGODB_URI and MONGODB_DB must be configured")
+  }
+
   // If we have a cached connection, use it
   if (cachedClient && cachedDb) {
     return { client: cachedClient, db: cachedDb }
