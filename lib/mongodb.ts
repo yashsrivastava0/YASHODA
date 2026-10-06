@@ -26,14 +26,14 @@ export async function connectToDatabase() {
         socketTimeoutMS: 45000,
       }
 
-      cachedClient = new MongoClient(MONGODB_URI, options)
+      cachedClient = new MongoClient(mongodbUri, options)
       console.log("Connecting to MongoDB Atlas...")
       await cachedClient.connect()
       console.log("Connected to MongoDB Atlas successfully")
     }
 
     // Get the database
-    const db = cachedClient.db(MONGODB_DB)
+    const db = cachedClient.db(mongodbDb)
     cachedDb = db
 
     return { client: cachedClient, db }
