@@ -1,13 +1,15 @@
-export const dynamic = "force-dynamic"
-
 import { NextResponse } from "next/server"
 import { connectToDatabase } from "@/lib/mongodb"
+
+export const dynamic = "force-dynamic"
+export const revalidate = 0
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
-    const category = searchParams.get("category")
-    const limit = searchParams.get("limit") ? Number.parseInt(searchParams.get("limit")!) : 10
+    const category = searchParams.get("category")?.trim()
+    const requestedLimit = Number.parseInt(searchParams.get("limit") ?? "10", 10)
+    const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(requestedLimit, 1), 50) : 10
 
     const { db } = await connectToDatabase()
 
