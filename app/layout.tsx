@@ -11,9 +11,10 @@ import { Toaster } from "sonner"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "YASHODA | Your All-Season Hyper Online Digital Apparel",
-  description: "Experience the future of fashion with YASHODA - Your All-Season Hyper Online Digital Apparel",
-    generator: 'v0.dev'
+  title: "YASHODA — Objects with character",
+  description: "A considered marketplace for fashion, useful objects, and details that make your world feel like yours.",
+  icons: { icon: "/favicon.png", apple: "/favicon.png" },
+  generator: "Next.js",
 }
 
 export default function RootLayout({
