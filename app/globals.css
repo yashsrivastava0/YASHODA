@@ -3,76 +3,11 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 262.1 83.3% 57.8%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 262.1 83.3% 57.8%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 262.1 83.3% 57.8%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 262.1 83.3% 57.8%;
-  }
+  :root { --background: 38 33% 96%; --foreground: 24 18% 10%; --card: 38 30% 99%; --card-foreground: 24 18% 10%; --popover: 38 30% 99%; --popover-foreground: 24 18% 10%; --primary: 14 54% 39%; --primary-foreground: 38 33% 96%; --secondary: 34 22% 90%; --secondary-foreground: 24 18% 10%; --muted: 34 22% 91%; --muted-foreground: 24 10% 42%; --accent: 34 22% 90%; --accent-foreground: 24 18% 10%; --destructive: 0 65% 48%; --destructive-foreground: 0 0% 98%; --border: 30 16% 83%; --input: 30 16% 83%; --ring: 14 54% 39%; --radius: .75rem; }
+  .dark { --background: 24 18% 8%; --foreground: 38 33% 95%; --card: 24 16% 11%; --card-foreground: 38 33% 95%; --popover: 24 16% 11%; --popover-foreground: 38 33% 95%; --primary: 16 58% 57%; --primary-foreground: 24 18% 8%; --secondary: 24 13% 17%; --secondary-foreground: 38 33% 95%; --muted: 24 13% 17%; --muted-foreground: 30 12% 68%; --accent: 24 13% 17%; --accent-foreground: 38 33% 95%; --border: 24 12% 23%; --input: 24 12% 23%; --ring: 16 58% 57%; }
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; font-feature-settings: "ss01" on, "cv11" on; }
 }
+@layer components { .eyebrow { @apply text-sm font-medium uppercase tracking-[.22em] text-primary; } }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/* Custom styles for the futuristic theme */
-.bg-gradient-glow {
-  background: linear-gradient(to right, rgba(147, 51, 234, 0.2), rgba(79, 70, 229, 0.2));
-  backdrop-filter: blur(10px);
-}
-
-.text-glow {
-  text-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
-}
-
-.card-hover {
-  transition: all 0.3s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 25px -5px rgba(147, 51, 234, 0.2), 0 10px 10px -5px rgba(79, 70, 229, 0.2);
-}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }

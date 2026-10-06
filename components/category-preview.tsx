@@ -4,61 +4,16 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 
-interface CategoryPreviewProps {
-  title: string
-  imageUrl: string
-  href: string
+const images: Record<string, string> = {
+  fashion: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=700&h=900&fit=crop&crop=center&q=85",
+  electronics: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=700&h=900&fit=crop&crop=center&q=85",
+  "home decor": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&h=900&fit=crop&crop=center&q=85",
+  skincare: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=700&h=900&fit=crop&crop=center&q=85",
 }
 
-export function CategoryPreview({ title, imageUrl, href }: CategoryPreviewProps) {
-  // Define category-specific high-quality images
-  const getCategoryImage = (title: string) => {
-    switch (title.toLowerCase()) {
-      case "fashion":
-        return "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=600&h=800&fit=crop&crop=center&q=80"
-      case "electronics":
-        return "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&h=800&fit=crop&crop=center&q=80"
-      case "home decor":
-      case "home-decor":
-        return "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=800&fit=crop&crop=center&q=80"
-      case "skincare":
-        return "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&h=800&fit=crop&crop=center&q=80"
-      default:
-        return imageUrl
-    }
-  }
-
-  const finalImageUrl = getCategoryImage(title)
-
-  return (
-    <motion.div
-      className="relative overflow-hidden rounded-lg h-[400px] card-hover"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      viewport={{ once: true }}
-      whileHover={{ scale: 1.03 }}
-    >
-      <Link href={href} className="block h-full">
-        <Image
-          src={finalImageUrl || "/placeholder.svg"}
-          alt={`${title} category`}
-          fill
-          className="object-cover transition-transform duration-500 hover:scale-110"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          priority={false}
-          onError={(e) => {
-            console.error(`Failed to load image for ${title}:`, finalImageUrl)
-            // Fallback to placeholder
-            e.currentTarget.src = "/placeholder.svg?height=400&width=300"
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-full p-6">
-          <h3 className="text-2xl font-bold text-white">{title}</h3>
-          <p className="text-white/80 mt-2">Explore Collection</p>
-        </div>
-      </Link>
-    </motion.div>
-  )
+export function CategoryPreview({ title, imageUrl, href }: { title: string; imageUrl: string; href: string }) {
+  const image = images[title.toLowerCase()] || imageUrl || "/placeholder.svg"
+  return <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} whileHover={{ y: -6 }} transition={{ duration: .45 }} viewport={{ once: true }} className="group relative h-[390px] overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+    <Link href={href} className="block h-full"><Image src={image} alt={`${title} collection`} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw" className="object-cover transition-transform duration-700 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" /><div className="absolute bottom-0 left-0 p-6 text-white"><p className="text-xs tracking-[.2em] text-white/70">COLLECTION</p><h3 className="mt-2 text-2xl font-semibold tracking-tight">{title}</h3><p className="mt-2 text-sm text-white/75">Explore the edit <span aria-hidden="true">→</span></p></div></Link>
+  </motion.div>
 }

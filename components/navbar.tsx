@@ -1,115 +1,17 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
-import { ShoppingCart, Menu, X, Search } from "lucide-react"
+import { ShoppingBag, Menu, X, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCart } from "@/hooks/use-cart"
 import { UserMenu } from "@/components/auth/user-menu"
 import { AnimatedLogo } from "@/components/animated-logo"
 
+const navItems = [{ name: "Fashion", href: "/categories/fashion" }, { name: "Electronics", href: "/categories/electronics" }, { name: "Home", href: "/categories/home-decor" }, { name: "Skincare", href: "/categories/skincare" }]
 export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { totalItems } = useCart()
-
-  const navItems = [
-    { name: "Home", href: "/" },
-    { name: "Fashion", href: "/categories/fashion" },
-    { name: "Electronics", href: "/categories/electronics" },
-    { name: "Home Decor", href: "/categories/home-decor" },
-    { name: "Skincare", href: "/categories/skincare" },
-  ]
-
-  return (
-    <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-gray-800">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <AnimatedLogo size="md" />
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link key={item.name} href={item.href} className="text-gray-300 hover:text-white transition-colors">
-                {item.name}
-              </Link>
-            ))}
-          </div>
-
-          {/* Search Bar */}
-          <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search products..."
-                className="pl-10 bg-gray-800/50 border-gray-700 focus:border-purple-500"
-              />
-            </div>
-          </div>
-
-          {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
-            {/* Cart */}
-            <Link href="/cart" className="relative">
-              <Button variant="ghost" size="icon">
-                <ShoppingCart className="h-5 w-5" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </Button>
-            </Link>
-
-            {/* User Menu */}
-            <UserMenu />
-
-            {/* Mobile Menu Button */}
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-gray-800"
-          >
-            <div className="py-4 space-y-2">
-              {/* Mobile Search */}
-              <div className="px-4 pb-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Search products..."
-                    className="pl-10 bg-gray-800/50 border-gray-700 focus:border-purple-500"
-                  />
-                </div>
-              </div>
-
-              {/* Mobile Navigation Links */}
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </div>
-    </nav>
-  )
+  const [open, setOpen] = useState(false); const { totalItems } = useCart()
+  return <nav className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur-xl"><div className="container flex h-16 items-center justify-between px-6 lg:px-10"><Link href="/" aria-label="Yashoda home"><AnimatedLogo size="md" /></Link><div className="hidden items-center gap-7 md:flex">{navItems.map(item => <Link key={item.href} href={item.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">{item.name}</Link>)}</div><div className="flex items-center gap-1"><div className="relative hidden lg:block"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input aria-label="Search products" placeholder="Search the edit" className="h-9 w-44 rounded-full bg-card pl-9 text-sm" /></div><Link href="/cart" aria-label={`Shopping bag, ${totalItems} items`}><Button variant="ghost" size="icon" className="relative rounded-full"><ShoppingBag />{totalItems > 0 && <span className="absolute right-0 top-0 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">{totalItems}</span>}</Button></Link><UserMenu /><Button variant="ghost" size="icon" className="rounded-full md:hidden" onClick={() => setOpen(v => !v)} aria-label={open ? "Close menu" : "Open menu"}>{open ? <X /> : <Menu />}</Button></div></div><AnimatePresence>{open && <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="border-t border-border bg-background md:hidden"><div className="flex flex-col gap-1 px-6 py-4">{navItems.map(item => <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-muted-foreground hover:bg-muted hover:text-foreground">{item.name}</Link>)}</div></motion.div>}</AnimatePresence></nav>
 }
